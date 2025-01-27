@@ -1,8 +1,13 @@
+import { DefaultLayout } from "./layout/DefaultLayout";
 import { Entry } from "./pages/entry/Entry.page";
+import "./App.css";
 function App() {
   return(
     <div className="App">
-      <Entry/>
+      {/* <Entry/> */}
+      <DefaultLayout>
+        //Dashboard
+      </DefaultLayout>
     </div>
   )
 }
