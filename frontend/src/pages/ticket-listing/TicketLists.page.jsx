@@ -27,7 +27,7 @@ export const TicketLists = () => {
         <Col>
           <Button variant="info">Add New Ticket</Button>
         </Col>
-        <Col className="text-right">
+        <Col className="text-end">
           <SearchForm handleOnChange={handleOnChange} str={str} />
         </Col>
       </Row>
