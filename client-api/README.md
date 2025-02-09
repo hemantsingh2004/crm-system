@@ -15,7 +15,6 @@ Note: Make sure you have nodemon installed in your system otherwise you can inst
 
 All the user API router follow `/v1/user/`
 
-```markdown
 |#| Routers                           |verbs |Progress|Is Private| Description                                      |
 |-| --------------------------------- | ---- | ------ | -------- | ------------------------------------------------ |
 |1| "/vi/user/login"                  | POST | TODO   | No       | Verify user authentication and return JWT        |
@@ -34,4 +33,3 @@ All the user API routers follow "/vi/ticket/"
 | 3   | "/vi/ticket"                   | POST  | TODO     | Yes        | Create a new ticket                      |
 | 4   | "/vi/ticket/{id}"              | PUT   | TODO     | Yes        | Update ticket details, ie. reply message |
 | 5   | "/vi/ticket/close-ticket/{id}" | PUT   | TODO     | Yes        | Close a ticket                           |
-```
