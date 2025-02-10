@@ -1,20 +1,35 @@
+import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
 const app = express();
+const port = process.env.PORT || 3000;
 
 //API security
 app.use(helmet());
 app.use(cors());
 
-//Logger
-app.use(morgan("combined"));
+//MongoDB connection
+import mongoose from "mongoose";
+
+mongoose.connect(process.env.MONGODB_URL);
+
+if (process.env.NODE_ENV !== "production") {
+  mongoose.connection.on("connected", () => {
+    console.log("Mongoose is connected");
+  });
+
+  mongoose.connection.on("error", (err) => {
+    console.log(err);
+  });
+
+  //Logger
+  app.use(morgan("combined"));
+}
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-const port = process.env.PORT || 3000;
 
 //Load routers
 import userRouter from "./src/routers/user.router.js";
