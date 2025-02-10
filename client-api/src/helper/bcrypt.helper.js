@@ -6,3 +6,9 @@ export const hashPassword = async (password) => {
     resolve(bcrypt.hashSync(password, saltRounds));
   });
 };
+
+export const comparePassword = async (password, hash) => {
+  return new Promise((resolve) => {
+    resolve(bcrypt.compareSync(password, hash));
+  });
+};
