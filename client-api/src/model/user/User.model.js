@@ -19,6 +19,16 @@ const getUserByEmail = async (email) => {
   }
 };
 
+const getUserById = async (_id) => {
+  if (!_id) return false;
+  try {
+    const data = await UserModel.findOne({ _id }).exec();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const storeUserRefreshJWT = (_id, token) => {
   return new Promise((resolve, reject) => {
     try {
@@ -44,4 +54,4 @@ const storeUserRefreshJWT = (_id, token) => {
   });
 };
 
-export { insertUser, getUserByEmail, storeUserRefreshJWT };
+export { insertUser, getUserByEmail, getUserById, storeUserRefreshJWT };

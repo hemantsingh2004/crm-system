@@ -6,7 +6,7 @@ const setJWT = async (key, value) => {
   try {
     await client.connect();
 
-    const res = await client.set(key, value);
+    const res = await client.set(key, value, "EX", 60 * 60);
     return res;
   } catch (err) {
     throw err;
