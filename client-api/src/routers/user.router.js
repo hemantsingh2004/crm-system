@@ -36,7 +36,6 @@ router.post("/login", async (req, res) => {
   if (!email || !password)
     return res.status(400).json({ message: "Bad request" });
   const user = await getUserByEmail(email);
-  console.log(user);
 
   // Getting password from database
   const passFromDb = user && user._id ? user.password : null;
@@ -47,8 +46,8 @@ router.post("/login", async (req, res) => {
   if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
   // Create refresh and access JWT
-  const accessJWT = await createAccessJWT({ email: user.email });
-  const refreshJWT = await createRefreshJWT({ email: user.email });
+  const accessJWT = await createAccessJWT({ id: `${user._id}` });
+  const refreshJWT = await createRefreshJWT({ id: `${user._id}` });
 
   res.status(200).json({ message: "User logged in", accessJWT, refreshJWT });
 });

@@ -1,19 +1,32 @@
 import jwt from "jsonwebtoken";
+import { setJWT, getJWT } from "./redis.helper.js";
+import { storeUserRefreshJWT } from "../model/user/User.model.js";
 
-const createAccessJWT = (payload) => {
-  const accessJWT = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
-    expiresIn: "1h",
-  });
+const createAccessJWT = async (payload) => {
+  try {
+    const accessJWT = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
+      expiresIn: "1h",
+    });
 
-  return Promise.resolve(accessJWT);
+    await setJWT(accessJWT, payload.id);
+
+    return Promise.resolve(accessJWT);
+  } catch (err) {
+    return Promise.reject(err);
+  }
 };
 
-const createRefreshJWT = (payload) => {
-  const refreshJWT = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: "7d",
-  });
+const createRefreshJWT = async (payload) => {
+  try {
+    const refreshJWT = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
+      expiresIn: "7d",
+    });
 
-  return Promise.resolve(refreshJWT);
+    await storeUserRefreshJWT(payload.id, refreshJWT);
+    return Promise.resolve(refreshJWT);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
 export { createAccessJWT, createRefreshJWT };
