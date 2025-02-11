@@ -1,14 +1,15 @@
 import express from "express";
 import bcrypt from "bcrypt";
 const router = express.Router();
-import { insertUser } from "../model/user/User.model.js";
-import { hashPassword } from "../helper/bcrypt.helper.js";
+import { insertUser, getUserByEmail } from "../model/user/User.model.js";
+import { hashPassword, comparePassword } from "../helper/bcrypt.helper.js";
 
 router.all("/", (req, res, next) => {
   // res.json({ message: "Hello User API" });
   next();
 });
 
+// Create new user router
 router.post("/", async (req, res) => {
   const { password, ...rest } = req.body;
   try {
@@ -25,6 +26,25 @@ router.post("/", async (req, res) => {
     console.log("Error from router here", err);
     res.status(400).json({ message: err.message });
   }
+});
+
+// User sign in endpoint
+router.post("/login", async (req, res) => {
+  // Chek if email and password is provided
+  const { email, password } = req.body;
+  if (!email || !password)
+    return res.status(400).json({ message: "Bad request" });
+  const user = await getUserByEmail(email);
+  console.log(user);
+
+  // Getting password from database
+  const passFromDb = user && user._id ? user.password : null;
+  if (!passFromDb) return res.status(400).json({ message: "User not found" });
+
+  // Compare password
+  const isMatch = await comparePassword(password, passFromDb);
+  console.log(isMatch);
+  res.status(200).json({ message: "User logged in" });
 });
 
 export default router;
