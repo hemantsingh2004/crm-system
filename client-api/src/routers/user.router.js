@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 const router = express.Router();
 import { insertUser, getUserByEmail } from "../model/user/User.model.js";
 import { hashPassword, comparePassword } from "../helper/bcrypt.helper.js";
+import { createAccessJWT, createRefreshJWT } from "../helper/jwt.helper.js";
 
 router.all("/", (req, res, next) => {
   // res.json({ message: "Hello User API" });
@@ -43,8 +44,13 @@ router.post("/login", async (req, res) => {
 
   // Compare password
   const isMatch = await comparePassword(password, passFromDb);
-  console.log(isMatch);
-  res.status(200).json({ message: "User logged in" });
+  if (!isMatch) return res.status(400).json({ message: "Invalid password" });
+
+  // Create refresh and access JWT
+  const accessJWT = await createAccessJWT({ email: user.email });
+  const refreshJWT = await createRefreshJWT({ email: user.email });
+
+  res.status(200).json({ message: "User logged in", accessJWT, refreshJWT });
 });
 
 export default router;
