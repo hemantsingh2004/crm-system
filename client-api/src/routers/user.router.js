@@ -1,5 +1,4 @@
 import express from "express";
-import bcrypt from "bcrypt";
 const router = express.Router();
 import {
   insertUser,
@@ -9,6 +8,8 @@ import {
 import { hashPassword, comparePassword } from "../helper/bcrypt.helper.js";
 import { createAccessJWT, createRefreshJWT } from "../helper/jwt.helper.js";
 import { userAuthorization } from "../middlewares/authorization.middleware.js";
+import { setPasswordResetPin } from "../model/reset-pin/resetPin.model.js";
+import sendMail from "../helper/email.helper.js";
 
 router.all("/", (req, res, next) => {
   // res.json({ message: "Hello User API" });
@@ -63,6 +64,26 @@ router.post("/login", async (req, res) => {
   const refreshJWT = await createRefreshJWT({ id: `${user._id}` });
 
   res.status(200).json({ message: "User logged in", accessJWT, refreshJWT });
+});
+
+router.post("/reset-password", async (req, res) => {
+  const { email } = req.body;
+  const user = await getUserByEmail(email);
+  if (user && user._id) {
+    const setPin = await setPasswordResetPin(email);
+    const mail = await sendMail(email, setPin.pin);
+    if (mail && mail.messageId) {
+      return res.json({
+        message:
+          "An email will be sent to you containing the password reset pin",
+      });
+    }
+    res.status(400).json({ message: "Something went wrong, try again later" });
+  }
+  res.status(400).json({
+    message:
+      "If the email exists, we will send you the pin to change your password",
+  });
 });
 
 export default router;
