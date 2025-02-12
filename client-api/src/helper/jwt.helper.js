@@ -38,4 +38,13 @@ const verifyAccessJWT = (token) => {
   }
 };
 
-export { createAccessJWT, createRefreshJWT, verifyAccessJWT };
+const verifyRefreshJWT = (token) => {
+  try {
+    const result = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    return Promise.resolve(result);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export { createAccessJWT, createRefreshJWT, verifyAccessJWT, verifyRefreshJWT };

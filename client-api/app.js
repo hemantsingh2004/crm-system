@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import morgan from "morgan";
+import morgan, { token } from "morgan";
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -34,10 +34,12 @@ app.use(express.json());
 //Load routers
 import userRouter from "./src/routers/user.router.js";
 import ticketRouter from "./src/routers/ticket.router.js";
+import tokenRouter from "./src/routers/token.router.js";
 
 //Use routers
 app.use("/v1/user", userRouter);
 app.use("/v1/ticket", ticketRouter);
+app.use("/v1/token", tokenRouter);
 
 //Error Handler
 import errorHandler from "./src/utils/errorHandler.js";
