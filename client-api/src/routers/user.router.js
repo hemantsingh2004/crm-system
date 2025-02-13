@@ -15,6 +15,10 @@ import {
   getPinByEmail,
 } from "../model/reset-pin/resetPin.model.js";
 import sendMail from "../helper/email.helper.js";
+import {
+  resetPassReqValidation,
+  resetPassValidation,
+} from "../middlewares/validation.middleware.js";
 
 router.all("/", (req, res, next) => {
   // res.json({ message: "Hello User API" });
@@ -71,7 +75,7 @@ router.post("/login", async (req, res) => {
   res.status(200).json({ message: "User logged in", accessJWT, refreshJWT });
 });
 
-router.post("/reset-password", async (req, res) => {
+router.post("/reset-password", resetPassReqValidation, async (req, res) => {
   const { email } = req.body;
 
   try {
@@ -104,7 +108,7 @@ router.post("/reset-password", async (req, res) => {
   }
 });
 
-router.patch("/reset-password", async (req, res) => {
+router.patch("/reset-password", resetPassValidation, async (req, res) => {
   const { email, pin, newPassword } = req.body;
   try {
     const pinFromDb = await getPinByEmail(email);
