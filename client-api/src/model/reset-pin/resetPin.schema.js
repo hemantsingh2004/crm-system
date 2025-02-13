@@ -12,6 +12,13 @@ const resetPinSchema = new mongoose.Schema({
     minLength: 6,
     required: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: "1d",
+  },
 });
+
+resetPinSchema.index({ email: 1 }, { unique: true });
 
 export default mongoose.model("resetPin", resetPinSchema);

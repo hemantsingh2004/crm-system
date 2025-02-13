@@ -5,8 +5,8 @@ const transporter = nodemailer.createTransport({
   host: "smtp.ethereal.email",
   port: 587,
   auth: {
-    user: "eden.casper41@ethereal.email",
-    pass: "4yr2sSBTUw8WcajGxP",
+    user: "maria.weimann@ethereal.email",
+    pass: "9QKPuky5qaX5ChxTz2",
   },
 });
 
@@ -24,17 +24,30 @@ const send = async (info) => {
   });
 };
 
-const sendMail = async (email, pin) => {
-  const info = {
-    from: '"eden" <eden.casper41@ethereal.email>',
-    to: `${email}`,
-    subject: "Password Reset Pin",
-    text: `Your password reset pin is ${pin},\n\n This pin is valid for 1 day.`,
-    html: `<p>Your password reset pin is <b>${pin}</b>
-    </br></br><span>This pin is valid for 1 day.</span></p>`,
-  };
-
-  return send(info);
+const sendMail = async (email, pin, type) => {
+  switch (type) {
+    case "request-password-reset":
+      const resetInfo = {
+        from: '"eden" <eden.casper41@ethereal.email>',
+        to: `${email}`,
+        subject: "Password Reset Pin",
+        text: `Your password reset pin is ${pin},\n\nThis pin is valid for 1 day.`,
+        html: `<p>Your password reset pin is <b>${pin}</b>
+        </br></br><span>This pin is valid for 1 day.</span></p>`,
+      };
+      return send(resetInfo);
+    case "reset-successful":
+      const successInfo = {
+        from: '"eden" <eden.casper41@ethereal.email>',
+        to: `${email}`,
+        subject: "Password Reset Successful",
+        text: `Your password has been reset successfully.`,
+        html: `<p>Your password has been reset successfully.</p>`,
+      };
+      return send(successInfo);
+    default:
+      throw new Error(`Unknown email type: ${type}`);
+  }
 };
 
 export default sendMail;
