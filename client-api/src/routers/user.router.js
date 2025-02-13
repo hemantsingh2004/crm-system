@@ -5,6 +5,7 @@ import {
   getUserByEmail,
   getUserById,
   updatePassword,
+  storeUserRefreshJWT,
 } from "../model/user/User.model.js";
 import { hashPassword, comparePassword } from "../helper/bcrypt.helper.js";
 import { createAccessJWT, createRefreshJWT } from "../helper/jwt.helper.js";
@@ -19,6 +20,7 @@ import {
   resetPassReqValidation,
   resetPassValidation,
 } from "../middlewares/validation.middleware.js";
+import { deleteJWT } from "../helper/redis.helper.js";
 
 router.all("/", (req, res, next) => {
   // res.json({ message: "Hello User API" });
@@ -127,6 +129,18 @@ router.patch("/reset-password", resetPassValidation, async (req, res) => {
     return res
       .status(500)
       .json({ message: "Server error. Please try again later." });
+  }
+});
+
+router.delete("/logout", userAuthorization, async (req, res) => {
+  const { authorization } = req.headers;
+  const userId = req.userId;
+  try {
+    await deleteJWT(authorization);
+    await storeUserRefreshJWT(userId, "");
+    res.status(200).json({ message: "User logged out" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
