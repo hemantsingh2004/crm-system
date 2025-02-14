@@ -39,4 +39,50 @@ const getTicketById = async (ticketId, clientId) => {
   });
 };
 
-export { insertTicket, getTickets, getTicketById };
+const updateClientTicket = async (ticketId, clientId, updateObj) => {
+  return new Promise((resolve, reject) => {
+    try {
+      ticketModel
+        .findOneAndUpdate(
+          { _id: ticketId, clientId },
+          {
+            status: "Operator response pending",
+            $push: { conversation: updateObj },
+          },
+          { new: true }
+        )
+        .then((data) => resolve(data))
+        .catch((err) => reject(err));
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const updateStatusClose = async (ticketId, clientId) => {
+  return new Promise((resolve, reject) => {
+    try {
+      ticketModel
+        .findOneAndUpdate(
+          { _id: ticketId, clientId },
+          {
+            status: "Closed",
+            isActive: false,
+          },
+          { new: true }
+        )
+        .then((data) => resolve(data))
+        .catch((err) => reject(err));
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export {
+  insertTicket,
+  getTickets,
+  getTicketById,
+  updateClientTicket,
+  updateStatusClose,
+};

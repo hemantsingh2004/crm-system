@@ -22,6 +22,11 @@ const ticketSchema = new mongoose.Schema({
     required: "true",
     default: Date.now,
   },
+  isActive: {
+    type: Boolean,
+    required: "true",
+    default: true,
+  },
   conversation: [
     {
       date: {
@@ -44,6 +49,12 @@ const ticketSchema = new mongoose.Schema({
   ],
 });
 
-ticketSchema.index({ clientId: 1, subject: 1 }, { unique: true });
+ticketSchema.index(
+  { clientId: 1, subject: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { isActive: true },
+  }
+);
 
 export default mongoose.model("ticket", ticketSchema);
