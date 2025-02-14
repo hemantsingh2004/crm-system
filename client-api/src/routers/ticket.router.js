@@ -1,7 +1,11 @@
 import express from "express";
 const router = express.Router();
 import { userAuthorization } from "../middlewares/authorization.middleware.js";
-import { insertTicket } from "../model/ticket/ticket.model.js";
+import {
+  insertTicket,
+  getTickets,
+  getTicketById,
+} from "../model/ticket/ticket.model.js";
 
 router.all("/", (req, res, next) => {
   next();
@@ -30,6 +34,27 @@ router.post("/", userAuthorization, async (req, res) => {
     if (error.code === 11000) {
       return res.status(409).json({ message: "Ticket already exist" });
     }
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/", userAuthorization, async (req, res) => {
+  try {
+    const clientId = req.userId;
+    const tickets = await getTickets(clientId);
+    return res.json({ message: "Tickets fetched successfully", tickets });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/:ticketId", userAuthorization, async (req, res) => {
+  try {
+    const ticketId = req.params.ticketId;
+    const clientId = req.userId;
+    const ticket = await getTicketById(ticketId, clientId);
+    return res.json({ message: "Ticket fetched successfully", ticket });
+  } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 });
