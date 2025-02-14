@@ -9,37 +9,46 @@ import {
   updateStatusClose,
   deleteTicket,
 } from "../model/ticket/ticket.model.js";
+import {
+  ticketCreationValidation,
+  ticketUpdateValidation,
+} from "../middlewares/validation.middleware.js";
 
 router.all("/", (req, res, next) => {
   next();
 });
 
-router.post("/", userAuthorization, async (req, res) => {
-  try {
-    const { subject, sender, message } = req.body;
-    const clientId = req.userId;
-    const ticketObj = {
-      clientId,
-      subject,
-      conversation: [
-        {
-          sender,
-          message,
-        },
-      ],
-    };
-    const ticket = await insertTicket(ticketObj);
-    if (ticket && ticket._id) {
-      return res.json({ message: "Ticket created successfully", ticket });
+router.post(
+  "/",
+  ticketCreationValidation,
+  userAuthorization,
+  async (req, res) => {
+    try {
+      const { subject, sender, message } = req.body;
+      const clientId = req.userId;
+      const ticketObj = {
+        clientId,
+        subject,
+        conversation: [
+          {
+            sender,
+            message,
+          },
+        ],
+      };
+      const ticket = await insertTicket(ticketObj);
+      if (ticket && ticket._id) {
+        return res.json({ message: "Ticket created successfully", ticket });
+      }
+      return res.status(500).json({ message: "Unable to create ticket" });
+    } catch (error) {
+      if (error.code === 11000) {
+        return res.status(409).json({ message: "Ticket already exist" });
+      }
+      return res.status(500).json({ message: error.message });
     }
-    return res.status(500).json({ message: "Unable to create ticket" });
-  } catch (error) {
-    if (error.code === 11000) {
-      return res.status(409).json({ message: "Ticket already exist" });
-    }
-    return res.status(500).json({ message: error.message });
   }
-});
+);
 
 router.get("/", userAuthorization, async (req, res) => {
   try {
@@ -62,22 +71,25 @@ router.get("/:ticketId", userAuthorization, async (req, res) => {
   }
 });
 
-router.put("/:ticketId", userAuthorization, async (req, res) => {
-  try {
-    const clientId = req.userId;
-    const ticketId = req.params.ticketId;
-    const updateObj = req.body;
-    if (!updateObj.message || !updateObj.sender)
-      return res.status(400).json({ message: "Bad request" });
-    const ticket = await updateClientTicket(ticketId, clientId, updateObj);
-    if (ticket && ticket._id) {
-      return res.json({ message: "Ticket updated successfully" });
+router.put(
+  "/:ticketId",
+  ticketUpdateValidation,
+  userAuthorization,
+  async (req, res) => {
+    try {
+      const clientId = req.userId;
+      const ticketId = req.params.ticketId;
+      const updateObj = req.body;
+      const ticket = await updateClientTicket(ticketId, clientId, updateObj);
+      if (ticket && ticket._id) {
+        return res.json({ message: "Ticket updated successfully" });
+      }
+      return res.status(500).json({ message: "Unable to update ticket" });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
-    return res.status(500).json({ message: "Unable to update ticket" });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
   }
-});
+);
 
 router.patch("/close-ticket/:ticketId", userAuthorization, async (req, res) => {
   try {
