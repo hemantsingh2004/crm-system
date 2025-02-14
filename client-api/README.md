@@ -35,7 +35,7 @@ All the user API routers follow "/vi/ticket/"
 | 3   | "/vi/ticket"                   | POST   | Done     | Yes        | Create a new ticket                      |
 | 4   | "/vi/ticket/{id}"              | PUT    | Done     | Yes        | Update ticket details, ie. reply message |
 | 5   | "/vi/ticket/close-ticket/{id}" | PUT    | Done     | Yes        | Close a ticket                           |
-| 6   | "/vi/ticket/{id}"              | DELETE | TODO     | Yes        | Delete a ticket                          |
+| 6   | "/vi/ticket/{id}"              | DELETE | Done     | Yes        | Delete a ticket                          |
 
 # Refresh Token API
 
