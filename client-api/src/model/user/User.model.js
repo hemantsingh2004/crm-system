@@ -1,6 +1,6 @@
 import UserModel from "./User.schema.js";
 
-export const insertUser = (user) => {
+const insertUser = (user) => {
   return new Promise((resolve, reject) => {
     UserModel(user)
       .save()
@@ -9,7 +9,7 @@ export const insertUser = (user) => {
   });
 };
 
-export const getUserByEmail = async (email) => {
+const getUserByEmail = async (email) => {
   if (!email) return false;
   try {
     const data = await UserModel.findOne({ email }).exec();
@@ -18,3 +18,30 @@ export const getUserByEmail = async (email) => {
     throw error;
   }
 };
+
+const storeUserRefreshJWT = (_id, token) => {
+  return new Promise((resolve, reject) => {
+    try {
+      UserModel.findOneAndUpdate(
+        { _id },
+        {
+          $set: {
+            "refreshJWT.token": token,
+            "refreshJWT.addedAt": Date.now(),
+          },
+        },
+        { new: true }
+      )
+        .then((data) => resolve(data))
+        .catch((err) => {
+          console.log("Error from storeUserRefreshJWT", err);
+          reject(err);
+        });
+    } catch (error) {
+      console.log("Error from storeUserRefreshJWT", error);
+      reject(error);
+    }
+  });
+};
+
+export { insertUser, getUserByEmail, storeUserRefreshJWT };
