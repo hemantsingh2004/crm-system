@@ -29,4 +29,13 @@ const createRefreshJWT = async (payload) => {
   }
 };
 
-export { createAccessJWT, createRefreshJWT };
+const verifyAccessJWT = (token) => {
+  try {
+    const result = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    return Promise.resolve(result);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export { createAccessJWT, createRefreshJWT, verifyAccessJWT };

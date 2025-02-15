@@ -1,13 +1,26 @@
 import express from "express";
 import bcrypt from "bcrypt";
 const router = express.Router();
-import { insertUser, getUserByEmail } from "../model/user/User.model.js";
+import {
+  insertUser,
+  getUserByEmail,
+  getUserById,
+} from "../model/user/User.model.js";
 import { hashPassword, comparePassword } from "../helper/bcrypt.helper.js";
 import { createAccessJWT, createRefreshJWT } from "../helper/jwt.helper.js";
+import { userAuthorization } from "../middlewares/authorization.middleware.js";
 
 router.all("/", (req, res, next) => {
   // res.json({ message: "Hello User API" });
   next();
+});
+
+// Get User Profile Router
+router.get("/", userAuthorization, async (req, res) => {
+  const _id = req.userId;
+
+  const userProf = await getUserById(_id);
+  res.json({ userProf });
 });
 
 // Create new user router
