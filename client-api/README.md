@@ -19,7 +19,7 @@ All the user API router follow `/v1/user/`
 | --- | ------------------------- | ----- | -------- | ---------- | ------------------------------------------------ |
 | 1   | "/vi/user/login"          | POST  | DONE     | No         | Verify user authentication and return JWT        |
 | 2   | "/vi/user/reset-password" | POST  | DONE     | No         | Verify email and email pin to reset the password |
-| 3   | "/vi/user/reset-password" | PUT   | TODO     | No         | Replace with new password                        |
+| 3   | "/vi/user/reset-password" | PUT   | DONE     | No         | Replace with new password                        |
 | 4   | "/vi/user/"               | GET   | DONE     | Yes        | Get user's Info                                  |
 
 # Ticket API Resources
