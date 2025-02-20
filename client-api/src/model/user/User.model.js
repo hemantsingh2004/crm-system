@@ -54,4 +54,30 @@ const storeUserRefreshJWT = (_id, token) => {
   });
 };
 
-export { insertUser, getUserByEmail, getUserById, storeUserRefreshJWT };
+const updatePassword = (email, hashedPass) => {
+  return new Promise((resolve, reject) => {
+    try {
+      UserModel.findOneAndUpdate(
+        { email },
+        {
+          $set: {
+            password: hashedPass,
+          },
+        },
+        { new: true }
+      )
+        .then((data) => resolve(data))
+        .catch((err) => reject(err));
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export {
+  insertUser,
+  getUserByEmail,
+  getUserById,
+  storeUserRefreshJWT,
+  updatePassword,
+};

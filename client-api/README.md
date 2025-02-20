@@ -18,7 +18,7 @@ All the user API router follow `/v1/user/`
 | #   | Routers                   | verbs | Progress | Is Private | Description                                      |
 | --- | ------------------------- | ----- | -------- | ---------- | ------------------------------------------------ |
 | 1   | "/vi/user/login"          | POST  | DONE     | No         | Verify user authentication and return JWT        |
-| 2   | "/vi/user/reset-password" | POST  | TODO     | No         | Verify email and email pin to reset the password |
+| 2   | "/vi/user/reset-password" | POST  | DONE     | No         | Verify email and email pin to reset the password |
 | 3   | "/vi/user/reset-password" | PUT   | TODO     | No         | Replace with new password                        |
 | 4   | "/vi/user/"               | GET   | DONE     | Yes        | Get user's Info                                  |
 

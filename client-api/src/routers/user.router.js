@@ -4,11 +4,16 @@ import {
   insertUser,
   getUserByEmail,
   getUserById,
+  updatePassword,
 } from "../model/user/User.model.js";
 import { hashPassword, comparePassword } from "../helper/bcrypt.helper.js";
 import { createAccessJWT, createRefreshJWT } from "../helper/jwt.helper.js";
 import { userAuthorization } from "../middlewares/authorization.middleware.js";
-import { setPasswordResetPin } from "../model/reset-pin/resetPin.model.js";
+import {
+  setPasswordResetPin,
+  deletePasswordResetPin,
+  getPinByEmail,
+} from "../model/reset-pin/resetPin.model.js";
 import sendMail from "../helper/email.helper.js";
 
 router.all("/", (req, res, next) => {
@@ -68,22 +73,57 @@ router.post("/login", async (req, res) => {
 
 router.post("/reset-password", async (req, res) => {
   const { email } = req.body;
-  const user = await getUserByEmail(email);
-  if (user && user._id) {
-    const setPin = await setPasswordResetPin(email);
-    const mail = await sendMail(email, setPin.pin);
-    if (mail && mail.messageId) {
-      return res.json({
+
+  try {
+    await deletePasswordResetPin(email); // Assumed to be an async function
+    const user = await getUserByEmail(email); // Assumed to be an async function
+
+    if (user && user._id) {
+      const setPin = await setPasswordResetPin(email); // Assumed to be an async function
+      const mail = await sendMail(email, setPin.pin, "request-password-reset"); // Assumed to be an async function
+
+      if (mail && mail.messageId) {
+        return res.json({
+          message:
+            "An email will be sent to you containing the password reset pin",
+        });
+      }
+
+      res
+        .status(400)
+        .json({ message: "Something went wrong, try again later" });
+    } else {
+      res.status(400).json({
         message:
-          "An email will be sent to you containing the password reset pin",
+          "If the email exists, we will send you the pin to change your password",
       });
     }
-    res.status(400).json({ message: "Something went wrong, try again later" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
-  res.status(400).json({
-    message:
-      "If the email exists, we will send you the pin to change your password",
-  });
+});
+
+router.patch("/reset-password", async (req, res) => {
+  const { email, pin, newPassword } = req.body;
+  try {
+    const pinFromDb = await getPinByEmail(email);
+
+    if (pinFromDb && pinFromDb.pin === pin) {
+      const hashedPassword = await hashPassword(newPassword);
+      const user = await updatePassword(email, hashedPassword);
+      if (user && user._id) {
+        await deletePasswordResetPin(email);
+        await sendMail(email, pin, "reset-successful");
+        return res.json({ message: "Password changed successfully" });
+      }
+    }
+    return res.status(500).json({ message: "Invalid or Expired Pin" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Server error. Please try again later." });
+  }
 });
 
 export default router;
