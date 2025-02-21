@@ -28,13 +28,14 @@ All the user API router follow `/v1/user/`
 
 All the user API routers follow "/vi/ticket/"
 
-| #   | Routers                        | verbs | Progress | Is Private | Description                              |
-| --- | ------------------------------ | ----- | -------- | ---------- | ---------------------------------------- |
-| 1   | "/vi/ticket"                   | GET   | TODO     | Yes        | Get all tickets for the logged in user   |
-| 2   | "/vi/ticket/{id}"              | GET   | TODO     | Yes        | Get ticket details                       |
-| 3   | "/vi/ticket"                   | POST  | TODO     | Yes        | Create a new ticket                      |
-| 4   | "/vi/ticket/{id}"              | PUT   | TODO     | Yes        | Update ticket details, ie. reply message |
-| 5   | "/vi/ticket/close-ticket/{id}" | PUT   | TODO     | Yes        | Close a ticket                           |
+| #   | Routers                        | verbs  | Progress | Is Private | Description                              |
+| --- | ------------------------------ | ------ | -------- | ---------- | ---------------------------------------- |
+| 1   | "/vi/ticket"                   | GET    | TODO     | Yes        | Get all tickets for the logged in user   |
+| 2   | "/vi/ticket/{id}"              | GET    | TODO     | Yes        | Get ticket details                       |
+| 3   | "/vi/ticket"                   | POST   | Done     | Yes        | Create a new ticket                      |
+| 4   | "/vi/ticket/{id}"              | PUT    | TODO     | Yes        | Update ticket details, ie. reply message |
+| 5   | "/vi/ticket/close-ticket/{id}" | PUT    | TODO     | Yes        | Close a ticket                           |
+| 6   | "/vi/ticket/{id}"              | DELETE | TODO     | Yes        | Delete a ticket                          |
 
 # Refresh Token API
 
