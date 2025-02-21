@@ -15,12 +15,14 @@ Note: Make sure you have nodemon installed in your system otherwise you can inst
 
 All the user API router follow `/v1/user/`
 
-| #   | Routers                   | verbs | Progress | Is Private | Description                                      |
-| --- | ------------------------- | ----- | -------- | ---------- | ------------------------------------------------ |
-| 1   | "/vi/user/login"          | POST  | DONE     | No         | Verify user authentication and return JWT        |
-| 2   | "/vi/user/reset-password" | POST  | DONE     | No         | Verify email and email pin to reset the password |
-| 3   | "/vi/user/reset-password" | PUT   | DONE     | No         | Replace with new password                        |
-| 4   | "/vi/user/"               | GET   | DONE     | Yes        | Get user's Info                                  |
+| #   | Routers                   | verbs  | Progress | Is Private | Description                                      |
+| --- | ------------------------- | ------ | -------- | ---------- | ------------------------------------------------ |
+| 1   | "/vi/user/"               | GET    | Done     | Yes        | Get user's Info                                  |
+| 2   | "/vi/user/"               | POST   | Done     | NO         | Create New user                                  |
+| 3   | "/vi/user/login"          | POST   | Done     | No         | Verify user authentication and return JWT        |
+| 4   | "/vi/user/reset-password" | POST   | Done     | No         | Verify email and email pin to reset the password |
+| 5   | "/vi/user/reset-password" | PUT    | Done     | No         | Replace with new password                        |
+| 6   | "/vi/user/logout"         | DELETE | Done     | Yes        | Delete Access token                              |
 
 # Ticket API Resources
 

@@ -28,4 +28,17 @@ const getJWT = async (key) => {
   }
 };
 
-export { setJWT, getJWT };
+const deleteJWT = async (key) => {
+  try {
+    await client.connect();
+
+    const res = await client.del(key);
+    return res;
+  } catch (err) {
+    throw err;
+  } finally {
+    await client.disconnect();
+  }
+};
+
+export { setJWT, getJWT, deleteJWT };
