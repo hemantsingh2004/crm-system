@@ -79,10 +79,24 @@ const updateStatusClose = async (ticketId, clientId) => {
   });
 };
 
+const deleteTicket = async (ticketId, clientId) => {
+  return new Promise((resolve, reject) => {
+    try {
+      ticketModel
+        .findOneAndDelete({ _id: ticketId, clientId })
+        .then((data) => resolve(data))
+        .catch((err) => reject(err));
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 export {
   insertTicket,
   getTickets,
   getTicketById,
   updateClientTicket,
   updateStatusClose,
+  deleteTicket,
 };

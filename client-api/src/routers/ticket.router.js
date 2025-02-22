@@ -7,6 +7,7 @@ import {
   getTicketById,
   updateClientTicket,
   updateStatusClose,
+  deleteTicket,
 } from "../model/ticket/ticket.model.js";
 
 router.all("/", (req, res, next) => {
@@ -87,6 +88,17 @@ router.patch("/close-ticket/:ticketId", userAuthorization, async (req, res) => {
       return res.json({ message: "Ticket closed successfully" });
     }
     return res.status(500).json({ message: "Unable to close ticket" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.delete("/:ticketId", userAuthorization, async (req, res) => {
+  try {
+    const ticketId = req.params.ticketId;
+    const clientId = req.userId;
+    await deleteTicket(ticketId, clientId);
+    return res.json({ message: "Ticket deleted successfully" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
