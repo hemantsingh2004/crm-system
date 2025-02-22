@@ -5,6 +5,8 @@ import {
   insertTicket,
   getTickets,
   getTicketById,
+  updateClientTicket,
+  updateStatusClose,
 } from "../model/ticket/ticket.model.js";
 
 router.all("/", (req, res, next) => {
@@ -54,6 +56,37 @@ router.get("/:ticketId", userAuthorization, async (req, res) => {
     const clientId = req.userId;
     const ticket = await getTicketById(ticketId, clientId);
     return res.json({ message: "Ticket fetched successfully", ticket });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.put("/:ticketId", userAuthorization, async (req, res) => {
+  try {
+    const clientId = req.userId;
+    const ticketId = req.params.ticketId;
+    const updateObj = req.body;
+    if (!updateObj.message || !updateObj.sender)
+      return res.status(400).json({ message: "Bad request" });
+    const ticket = await updateClientTicket(ticketId, clientId, updateObj);
+    if (ticket && ticket._id) {
+      return res.json({ message: "Ticket updated successfully" });
+    }
+    return res.status(500).json({ message: "Unable to update ticket" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.patch("/close-ticket/:ticketId", userAuthorization, async (req, res) => {
+  try {
+    const ticketId = req.params.ticketId;
+    const clientId = req.userId;
+    const ticket = await updateStatusClose(ticketId, clientId);
+    if (ticket && ticket._id) {
+      return res.json({ message: "Ticket closed successfully" });
+    }
+    return res.status(500).json({ message: "Unable to close ticket" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
