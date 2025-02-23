@@ -17,13 +17,13 @@ import {
 } from "../model/reset-pin/resetPin.model.js";
 import sendMail from "../helper/email.helper.js";
 import {
+  loginValidation,
   resetPassReqValidation,
   resetPassValidation,
 } from "../middlewares/validation.middleware.js";
 import { deleteJWT } from "../helper/redis.helper.js";
 
 router.all("/", (req, res, next) => {
-  // res.json({ message: "Hello User API" });
   next();
 });
 
@@ -55,38 +55,33 @@ router.post("/", async (req, res) => {
 });
 
 // User sign in endpoint
-router.post("/login", async (req, res) => {
-  // Chek if email and password is provided
+router.post("/login", loginValidation, async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password)
-    return res.status(400).json({ message: "Bad request" });
   const user = await getUserByEmail(email);
 
-  // Getting password from database
   const passFromDb = user && user._id ? user.password : null;
   if (!passFromDb) return res.status(400).json({ message: "User not found" });
 
-  // Compare password
   const isMatch = await comparePassword(password, passFromDb);
   if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-  // Create refresh and access JWT
   const accessJWT = await createAccessJWT({ id: `${user._id}` });
   const refreshJWT = await createRefreshJWT({ id: `${user._id}` });
 
   res.status(200).json({ message: "User logged in", accessJWT, refreshJWT });
 });
 
+// Password reset request
 router.post("/reset-password", resetPassReqValidation, async (req, res) => {
   const { email } = req.body;
 
   try {
-    await deletePasswordResetPin(email); // Assumed to be an async function
-    const user = await getUserByEmail(email); // Assumed to be an async function
+    await deletePasswordResetPin(email);
+    const user = await getUserByEmail(email);
 
     if (user && user._id) {
-      const setPin = await setPasswordResetPin(email); // Assumed to be an async function
-      const mail = await sendMail(email, setPin.pin, "request-password-reset"); // Assumed to be an async function
+      const setPin = await setPasswordResetPin(email);
+      const mail = await sendMail(email, setPin.pin, "request-password-reset");
 
       if (mail && mail.messageId) {
         return res.json({
@@ -110,6 +105,7 @@ router.post("/reset-password", resetPassReqValidation, async (req, res) => {
   }
 });
 
+// Password reset
 router.patch("/reset-password", resetPassValidation, async (req, res) => {
   const { email, pin, newPassword } = req.body;
   try {
@@ -132,6 +128,7 @@ router.patch("/reset-password", resetPassValidation, async (req, res) => {
   }
 });
 
+// User logout
 router.delete("/logout", userAuthorization, async (req, res) => {
   const { authorization } = req.headers;
   const userId = req.userId;

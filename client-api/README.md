@@ -43,4 +43,4 @@ All the user API routers follow "/vi/token/"
 
 | #   | Routers     | verbs | Progress | Is Private | Description                              |
 | --- | ----------- | ----- | -------- | ---------- | ---------------------------------------- |
-| 1   | "/vi/token" | GET   | DONE     | No         | Get new access token using refresh token |
+| 1   | "/vi/token" | GET   | Done     | No         | Get new access token using refresh token |

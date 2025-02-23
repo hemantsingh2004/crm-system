@@ -2,13 +2,17 @@ import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import morgan, { token } from "morgan";
+import morgan from "morgan";
+
+//app setup
 const app = express();
 const port = process.env.PORT || 3000;
 
 //API security
 app.use(helmet());
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 //MongoDB connection
 import mongoose from "mongoose";
@@ -27,9 +31,6 @@ if (process.env.NODE_ENV !== "production") {
   //Logger
   app.use(morgan("combined"));
 }
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 //Load routers
 import userRouter from "./src/routers/user.router.js";
