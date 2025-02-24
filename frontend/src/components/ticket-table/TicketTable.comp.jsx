@@ -14,9 +14,9 @@ export const TicketTable = ({ tickets }) => {
       </thead>
       <tbody>
         {tickets.length ? (
-          tickets.map((row, index) => (
-            <tr key={index}>
-              <td>{row.id}</td>
+          tickets.map((row) => (
+            <tr key={row._id}>
+              <td>{row._id}</td>
               <td>
                 <Link to={`/ticket/${row.id}`}>{row.subject}</Link>
               </td>
@@ -25,7 +25,7 @@ export const TicketTable = ({ tickets }) => {
             </tr>
           ))
         ) : (
-          <tr>
+          <tr key={"empty"}>
             <td colSpan={4} className="text-center">
               No Tickets To Show
             </td>
