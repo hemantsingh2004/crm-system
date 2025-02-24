@@ -3,6 +3,8 @@ import { getJWT } from "../helper/redis.helper.js";
 
 const userAuthorization = async (req, res, next) => {
   const { authorization } = req.headers;
+  if (!authorization)
+    return res.status(403).json({ message: "User is not logged in" });
 
   const decoded = await verifyAccessJWT(authorization);
   console.log(decoded);
