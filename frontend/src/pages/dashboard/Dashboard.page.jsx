@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllTickets } from "../../features/ticket/ticketActions.js";
 import { Link } from "react-router-dom";
 import { TicketTable } from "../../components/ticket-table/TicketTable.comp.jsx";
-import tickets from "../../assets/data/dummy-tickets.json";
 
 export const Dashboard = () => {
+  const dispatch = useDispatch();
+  const { tickets, isLoading, error } = useSelector((state) => state.tickets);
+
+  useEffect(() => {
+    dispatch(fetchAllTickets());
+  }, [dispatch]);
+
   return (
     <Container>
       <Row>
@@ -33,7 +41,13 @@ export const Dashboard = () => {
       <Row className="mt-1 mb-3">
         <Col>
           <div className="recent-ticket">
-            <TicketTable tickets={tickets.slice(0, 10)} />
+            {isLoading ? (
+              <h3>Loading ...</h3>
+            ) : error ? (
+              <h3>Error occurred: {error}</h3>
+            ) : (
+              <TicketTable tickets={tickets.slice(0, 10)} />
+            )}
           </div>
         </Col>
       </Row>

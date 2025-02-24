@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllTickets } from "../../features/ticket/ticketActions";
 import { SearchForm } from "../../components/search-form/SearchForm.comp";
 import { TicketTable } from "../../components/ticket-table/TicketTable.comp";
-import DummyTickets from "../../assets/data/dummy-tickets.json";
 
 export const TicketLists = () => {
+  const dispatch = useDispatch();
+  const { tickets, isLoading, error } = useSelector((state) => state.tickets);
   const [str, setStr] = useState("");
-  const [dispTickets, setDispTickets] = useState([DummyTickets]);
+  const [dispTickets, setDispTickets] = useState([]);
+
+  useEffect(() => {
+    dispatch(fetchAllTickets());
+  }, [dispatch]);
+
+  useEffect(() => {
+    setDispTickets(tickets);
+  }, [tickets]);
 
   const handleOnChange = (e) => setStr(e.target.value);
 
   const searchTicket = (str) => {
-    const displayTickets = DummyTickets.filter((row) =>
+    const displayTickets = tickets.filter((row) =>
       row.subject.toLowerCase().includes(str.toLowerCase())
     );
     setDispTickets(displayTickets);
@@ -37,7 +48,13 @@ export const TicketLists = () => {
       <hr />
       <Row className="mt-4">
         <Col>
-          <TicketTable tickets={dispTickets} />
+          {isLoading ? (
+            <h3>Loading ...</h3>
+          ) : error ? (
+            <h3>Error occurred: {error}</h3>
+          ) : (
+            <TicketTable tickets={dispTickets} />
+          )}
         </Col>
       </Row>
     </Container>
