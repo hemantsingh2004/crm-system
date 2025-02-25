@@ -1,4 +1,8 @@
+import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { loginSuccess } from "./features/login/loginSlice";
+import { authorizeAccessToken, refreshAccessToken } from "./api/userApi";
 import { DefaultLayout } from "./layout/DefaultLayout";
 import { Dashboard } from "./pages/dashboard/Dashboard.page";
 import { Entry } from "./pages/entry/Entry.page";
@@ -7,7 +11,26 @@ import { TicketLists } from "./pages/ticket-listing/TicketLists.page";
 import { Ticket } from "./pages/ticket/Ticket.page";
 import "./App.css";
 function App() {
-  const isAuth = true;
+  const dispatch = useDispatch();
+  const { isAuth } = useSelector((state) => state.login);
+  useEffect(() => {
+    const checkTokenValidity = async () => {
+      try {
+        const isTokenValid = await authorizeAccessToken();
+        if (isTokenValid) {
+          dispatch(loginSuccess());
+        } else {
+          const newToken = await refreshAccessToken();
+          if (newToken) {
+            dispatch(loginSuccess());
+          }
+        }
+      } catch (error) {
+        console.error("Error checking token validity:", error);
+      }
+    };
+    checkTokenValidity();
+  }, [dispatch]);
   return (
     <div className="App">
       <Routes>
@@ -29,7 +52,10 @@ function App() {
             element={isAuth ? <Ticket /> : <Navigate to="/" />}
           />
         </Route>
-        <Route path="/" element={<Entry />} />
+        <Route
+          path="/"
+          element={isAuth ? <Navigate to="/dashboard" /> : <Entry />}
+        />
       </Routes>
     </div>
   );

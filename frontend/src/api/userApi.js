@@ -40,9 +40,60 @@ const logoutApi = () => {
       }
       reject(false);
     } catch (error) {
-      reject(error);
+      if (error.response.data.message === "User is not logged in")
+        resolve(true);
+      reject(false);
     }
   });
 };
 
-export { loginApi, logoutApi };
+const authorizeAccessToken = async () => {
+  const accessJWT = sessionStorage.getItem("accessToken");
+  if (accessJWT) {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/v1/user/authorize",
+        {
+          headers: {
+            authorization: accessJWT,
+          },
+        }
+      );
+      if (response) {
+        const message = await response.data.message;
+        if (message === "Authorized") {
+          return true;
+        }
+      }
+    } catch (error) {
+      return false;
+    }
+  }
+  return false;
+};
+
+const refreshAccessToken = async () => {
+  const crmSystem = localStorage.getItem("crm-system");
+  const { refreshJWT } = crmSystem ? JSON.parse(crmSystem) : {};
+  if (refreshJWT) {
+    try {
+      const response = await axios.get("http://localhost:3000/v1/token", {
+        headers: {
+          authorization: refreshJWT,
+        },
+      });
+      if (response) {
+        const accessJWT = response.data.accessJWT;
+        sessionStorage.setItem("accessToken", accessJWT);
+        return true;
+      }
+    } catch (error) {
+      if (error.response.data.message === "Forbidden")
+        localStorage.removeItem("crm-system");
+      return false;
+    }
+  }
+  return false;
+};
+
+export { loginApi, logoutApi, authorizeAccessToken, refreshAccessToken };

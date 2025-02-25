@@ -23,6 +23,7 @@ All the user API router follow `/v1/user/`
 | 4   | "/vi/user/reset-password" | POST   | Done     | No         | Verify email and email pin to reset the password |
 | 5   | "/vi/user/reset-password" | PUT    | Done     | No         | Replace with new password                        |
 | 6   | "/vi/user/logout"         | DELETE | Done     | Yes        | Delete Access token                              |
+| 7   | "/vi/user/authorize"      | GET    | Done     | No         | Authorize access token                           |
 
 # Ticket API Resources
 
