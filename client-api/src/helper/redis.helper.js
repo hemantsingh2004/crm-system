@@ -1,44 +1,52 @@
 import redis from "redis";
 
-const client = redis.createClient(process.env.REDIS_URL);
+const client = redis.createClient({
+  url: process.env.REDIS_URL,
+});
+
+const connectRedis = async () => {
+  try {
+    await client.connect();
+    console.log("Redis client connected successfully");
+  } catch (err) {
+    console.error("Failed to connect to Redis:", err);
+  }
+};
+
+const disconnectRedis = async () => {
+  try {
+    await client.quit();
+    console.log("Redis client disconnected successfully");
+  } catch (err) {
+    console.error("Failed to disconnect from Redis:", err);
+  }
+};
 
 const setJWT = async (key, value) => {
   try {
-    await client.connect();
-
-    const res = await client.set(key, value, "EX", 60 * 60);
+    const res = await client.set(key, value, { EX: 60 * 60 });
     return res;
   } catch (err) {
     throw err;
-  } finally {
-    await client.disconnect();
   }
 };
 
 const getJWT = async (key) => {
   try {
-    await client.connect();
-
     const res = await client.get(key);
     return res;
   } catch (err) {
     throw err;
-  } finally {
-    await client.disconnect();
   }
 };
 
 const deleteJWT = async (key) => {
   try {
-    await client.connect();
-
     const res = await client.del(key);
     return res;
   } catch (err) {
     throw err;
-  } finally {
-    await client.disconnect();
   }
 };
 
-export { setJWT, getJWT, deleteJWT };
+export { setJWT, getJWT, deleteJWT, connectRedis, disconnectRedis };

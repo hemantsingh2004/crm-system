@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
+import { logoutApi } from "../../api/userApi";
 import logo from "../../assets/img/logo.png";
 
 export const Header = () => {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
 
-  const logMeOut = () => {
-    localStorage.clear();
-    navigate("/");
+  const logMeOut = async () => {
+    try {
+      const res = await logoutApi();
+      if (res) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleNavLinkClick = () => {

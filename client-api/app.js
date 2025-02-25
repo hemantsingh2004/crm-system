@@ -14,6 +14,10 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+//Redis connection
+import { connectRedis } from "./src/helper/redis.helper.js";
+connectRedis();
+
 //MongoDB connection
 import mongoose from "mongoose";
 
