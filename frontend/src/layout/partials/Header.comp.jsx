@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Navbar, Nav } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { logoutApi } from "../../api/userApi";
+import { loginFailure } from "../../features/login/loginSlice";
 import logo from "../../assets/img/logo.png";
 
 export const Header = () => {
+  const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
 
@@ -12,6 +15,7 @@ export const Header = () => {
     try {
       const res = await logoutApi();
       if (res) {
+        dispatch(loginFailure("User Logged Out"));
         navigate("/");
       }
     } catch (error) {

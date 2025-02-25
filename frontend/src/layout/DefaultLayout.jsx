@@ -1,20 +1,20 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import { Header } from './partials/Header.comp'
-import { Footer } from './partials/Footer.comp'
+import React from "react";
+import { Outlet } from "react-router-dom";
+import { Header } from "./partials/Header.comp";
+import { Footer } from "./partials/Footer.comp";
 
-export const DefaultLayout = ({children}) => {
+export const DefaultLayout = () => {
   return (
     <div className="default-layout">
       <header className="header">
-        <Header/>
+        <Header />
       </header>
       <main className="main">
-        <Outlet/>
+        <Outlet />
       </main>
       <footer className="footer">
-        <Footer/>
+        <Footer />
       </footer>
     </div>
-  )
-}
+  );
+};

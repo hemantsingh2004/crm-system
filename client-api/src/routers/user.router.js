@@ -141,4 +141,8 @@ router.delete("/logout", userAuthorization, async (req, res) => {
   }
 });
 
+router.get("/authorize", userAuthorization, async (req, res) => {
+  res.status(200).json({ message: "Authorized" });
+});
+
 export default router;
