@@ -38,7 +38,6 @@ The goal is to **simulate a professional CRM system**, like those used by real b
 ### Frontend:
 - React.js (Vite)
 - React Router DOM
-- Redux Toolkit
 - Axios
 - Tailwind CSS (or other CSS frameworks depending on branch)
 
@@ -88,7 +87,7 @@ crm-web-app/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/hemantsingh2004/crm-system
+git clone https://github.com/hemantsinghdev/crm-system
 cd crm-web-app
 ````
 
@@ -151,5 +150,5 @@ I also learned how design — from **Figma to frontend implementation** — play
 
 ---
 
-> Created by [Hemant Singh](https://github.com/hemantsingh2004)
+> Created by [Hemant Singh](https://github.com/hemantsinghdev)
 > Inspired and guided by [@DentedCode](https://www.youtube.com/@DentedCode) — thank you for your content!
